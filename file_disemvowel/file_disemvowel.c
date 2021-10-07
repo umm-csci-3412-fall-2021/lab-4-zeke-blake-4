@@ -49,35 +49,34 @@ void disemvowel(FILE* inputFile, FILE* outputFile) {
     char in_buf[BUF_SIZE];
     char out_buf[BUF_SIZE];
     int num_chars, chars_copied;
-    FILE* input = fopen(inputFile, "r"); // only read, the input file.
-    num_chars = fread(in_buf, sizeof(char), sizeof(in_buf), input);
-    fclose(input);
+    num_chars = fread(in_buf, sizeof(char), sizeof(in_buf), inputFile);
+    fclose(inputFile);
     chars_copied = copy_non_vowels(num_chars, in_buf, out_buf);
-    FILE* output = fopen(outputFile, "w"); // only write to the output file.
-    fwrite(out_buf, sizeof(char), chars_copied, output);
-    fclose(output);
+    fwrite(out_buf, sizeof(char), chars_copied, outputFile);
+    fclose(outputFile);
 }
 
 // Assume that we only have at maximum, 2 command line arguments given,
 // a input file and an output file, we can use an if statement to set the
 // input and output files.
 int main(int argc, char *argv[]) {
-    
+
     FILE *inputFile = stdin;
     FILE *outputFile = stdout;
     // This sets these to `stdin` and `stdout` by default.
     // You then need to set them to user specified files when the user
     // provides files names as command line arguments.
-    if(argc == 2)
-    {
-        FILE *inputFile = argv[1];
-        FILE *outputFile = stdout;
-    }
-    else
-    {
-        FILE *inputFile = argv[1];
-        FILE *outputFile = argv[2];
-    }
+    
+    // if(argc == 2)
+    // {
+    //     FILE *inputFile = fopen(argv[1]);
+    //     FILE *outputFile = stdout;
+    // }
+    // else
+    // {
+    //     FILE *inputFile = fopen(argv[1]);
+    //     FILE *outputFile = fopen(argv[2]);
+    // }
 
     // Code that processes the command line arguments
     // and sets up inputFile and outputFile.
