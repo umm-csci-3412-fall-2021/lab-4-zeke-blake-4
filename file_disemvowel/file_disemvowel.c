@@ -23,14 +23,12 @@ int copy_non_vowels(int num_chars, char* in_buf, char* out_buf) {
      * that were copied over.
      */
 
-    int counter; // count the number of non-vowels that were copied into out_buf
-    int j = 0;
+    int counter = 0; // count the number of non-vowels that were copied into out_buf
     for(int i = 0; i < num_chars; i++)
     {
         if(!is_vowel(in_buf[i]))
         {
-            out_buf[j] = in_buf[i];
-            j++;
+            out_buf[counter] = in_buf[i];
             counter++;
         }
     }
@@ -46,14 +44,21 @@ void disemvowel(FILE* inputFile, FILE* outputFile) {
      */
 
     // create input and output buffers
-    char in_buf[BUF_SIZE];
-    char out_buf[BUF_SIZE];
-    int num_chars, chars_copied;
-    num_chars = fread(in_buf, sizeof(char), sizeof(in_buf), inputFile);
-    fclose(inputFile);
-    chars_copied = copy_non_vowels(num_chars, in_buf, out_buf);
-    fwrite(out_buf, sizeof(char), chars_copied, outputFile);
-    fclose(outputFile);
+    char* inputBuffer = (char*) calloc(BUF_SIZE,sizeof(char));
+    char* outputBuffer = (char*) calloc(BUF_SIZE,sizeof(char));
+    int num_chars, chars_copied, j;  // j is initialized as 1 before fread() is called
+                                     // j will become what fread() returns, the amount of
+                                     // items fully read.
+    j = 0;
+    while(j != 0)
+    {
+        j = fread(inputBuffer, sizeof(char), BUF_SIZE, inputFile);
+        chars_copied = copy_non_vowels(j, inputBuffer, outputBuffer);
+        fwrite(outputBuffer, sizeof(char), chars_copied, outputFile);
+    }
+    free(inputBuffer);
+    free(outputBuffer);
+    
 }
 
 // Assume that we only have at maximum, 2 command line arguments given,
