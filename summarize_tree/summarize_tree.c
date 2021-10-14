@@ -16,16 +16,12 @@ bool is_dir(const char* path) {
    * return value from stat() in case there is a problem, e.g., maybe the
    * the file doesn't actually exist.
    */
-
-  struct stat buf;
-
-  if(stat(path, &buf) == 0)
-  {
+  struct stat   buf;
+  if (stat(path, &buf)==0){
     return S_ISDIR(buf.st_mode);
   }
-  else
-  {
-    return false; // stat found an error, i.e. the file did not exist
+  else{
+    return false;
   }
 }
 
@@ -36,29 +32,23 @@ bool is_dir(const char* path) {
 void process_path(const char*);
 
 void process_directory(const char* path) {
-  /*
-   * Update the number of directories seen, use opendir() to open the
-   * directory, and then use readdir() to loop through the entries
-   * and process them. You have to be careful not to process the
-   * "." and ".." directory entries, or you'll end up spinning in
-   * (infinite) loops. Also make sure you closedir() when you're done.
-   *
-   * You'll also want to use chdir() to move into this new directory,
-   * with a matching call to chdir() to move back out of it when you're
-   * done.
-   */
+  DIR *dir;
+
   // count the number of directories
   num_dirs++;
-  // goes into a directory, processes everything inside, then comes out.
-  DIR *dir = opendir(path);
-  while(readdir(path) != NULL)
+  dir = opendir(path);
+  chdir(path);
+  struct dirent *dp;
+  while ((dp = readdir(dir)) != NULL)
   {
-    chdir(d_ino);
-    process_directory(path);
-    chdir(d_ino);
+    if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0)
+    {
+      process_path(dp->d_name);
+    }
   }
-  closedir(path);
-
+  closedir(dir);
+  // move back up to parent directory. 
+  chdir("..");
 }
 
 void process_file(const char* path) {
