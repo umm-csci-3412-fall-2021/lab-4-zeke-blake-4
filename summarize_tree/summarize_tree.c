@@ -9,13 +9,7 @@
 static int num_dirs, num_regular;
 
 bool is_dir(const char* path) {
-  /*
-   * Use the stat() function (try "man 2 stat") to determine if the file
-   * referenced by path is a directory or not.  Call stat, and then use
-   * S_ISDIR to see if the file is a directory. Make sure you check the
-   * return value from stat() in case there is a problem, e.g., maybe the
-   * the file doesn't actually exist.
-   */
+  
   struct stat   buf;
   if (stat(path, &buf)==0){
     return S_ISDIR(buf.st_mode);
